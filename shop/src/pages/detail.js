@@ -13,24 +13,33 @@ let YellowBtn = styled.button`
 `; */
 
 export default function Detail(props) {
-  useEffect(() => {
-    let a = setTimeout(() => {
-      setAlert(false);
-    }, 2000);
 
-    return () => {
-      clreaTimeout(a);
-    }; // useEffect 내에 있는 코드보다 먼저 동작
-  }, []); // [] 입력 시 mount시에만 동작함
-
-  let [alert, setAlert] = useState(true);
+  let [banner, setBanner] = useState(true);
   let [count, setCount] = useState(0);
+  let [qty, setQty] = useState('');
   let { id } = useParams();
   let imgNum = parseInt(id) + 1;
 
+  useEffect(() => {
+    let a = setTimeout(() => {
+      setBanner(false);
+    }, 2000);
+
+    // clean up function : 타이머 등 사용할 때 
+    return () => {
+      clearTimeout(a);
+    }; // useEffect 내에 있는 코드보다 먼저 동작
+  }, []); // [] 입력 시 mount시에만 동작함
+
+  useEffect(() => {
+    if(isNaN(qty) == true) {
+      alert('그러지마세요');
+    }
+  }, [qty]);
+
   return (
     <div className="container">
-      {alert == true ? (
+      {banner == true ? (
         <div className="alert alert-warning">2초이내 클릭 시 할인</div>
       ) : null}
 
@@ -52,6 +61,7 @@ export default function Detail(props) {
           />
         </div>
         <div className="col-md-6">
+          <input onChange={(e) => {setQty(e.target.value)}} />
           <h4 className="pt-5">{props.shoes[id].title}</h4>
           <p>{props.shoes[id].content}</p>
           <p>{props.shoes[id].price}</p>
