@@ -4,7 +4,7 @@ import "./App.css";
 import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 /* Data */
 import data from "./data.js";
@@ -58,10 +58,8 @@ function App() {
                     return <Product shoes={shoes} num={i} />;
                   })}
                 </Row>
-                
-                {loading == true ? (
-                  <h5>Loading...</h5>
-                ) : null}
+
+                {loading == true ? <h5>Loading...</h5> : null}
                 <Button
                   variant="outline-warning"
                   onClick={() => {
@@ -72,20 +70,30 @@ function App() {
                 >
                   정렬
                 </Button>
-                <Button variant="outline-danger" onClick={() => {
-                  setLoading(true);
-                  axios.get('https://codingapple1.github.io/shop/data' + moreBtn + '.json')
-                  .then((result) => {
-                    setLoading(false);
-                    let copy = [...shoes, ...result.data];
-                    setShoes(copy);
-                    setMoreBtn(moreBtn + 1);
-                  })
-                  .catch(() => {
-                    setLoading(false);
-                    
-                  });
-                }}>더보기</Button>
+                <Button
+                  variant="outline-danger"
+                  onClick={() => {
+                    setLoading(true);
+                    axios
+                      .get(
+                        "https://codingapple1.github.io/shop/data" +
+                          moreBtn +
+                          ".json"
+                      )
+                      .then((result) => {
+                        setLoading(false);
+                        let copy = [...shoes, ...result.data];
+                        setShoes(copy);
+                        setMoreBtn(moreBtn + 1);
+                      })
+                      .catch(() => {
+                        setLoading(false);
+                        alert("상품이 없어요");
+                      });
+                  }}
+                >
+                  더보기
+                </Button>
               </Container>
             </>
           }
