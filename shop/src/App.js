@@ -2,8 +2,9 @@ import "./App.css";
 
 /* Library */
 import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 /* Data */
 import data from "./data.js";
@@ -16,6 +17,8 @@ import Product from "./components/products.js";
 
 function App() {
   let [shoes, setShoes] = useState(data);
+  let [moreBtn, setMoreBtn] = useState(2);
+  let [loading, setLoading] = useState(false);
   let navigate = useNavigate();
 
   return (
@@ -55,6 +58,10 @@ function App() {
                     return <Product shoes={shoes} num={i} />;
                   })}
                 </Row>
+                
+                {loading == true ? (
+                  <h5>Loading...</h5>
+                ) : null}
                 <Button
                   variant="outline-warning"
                   onClick={() => {
@@ -65,6 +72,20 @@ function App() {
                 >
                   정렬
                 </Button>
+                <Button variant="outline-danger" onClick={() => {
+                  setLoading(true);
+                  axios.get('https://codingapple1.github.io/shop/data' + moreBtn + '.json')
+                  .then((result) => {
+                    setLoading(false);
+                    let copy = [...shoes, ...result.data];
+                    setShoes(copy);
+                    setMoreBtn(moreBtn + 1);
+                  })
+                  .catch(() => {
+                    setLoading(false);
+                    
+                  });
+                }}>더보기</Button>
               </Container>
             </>
           }
