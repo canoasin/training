@@ -2,7 +2,7 @@ import "./App.css";
 
 /* Library */
 import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -10,13 +10,17 @@ import axios from "axios";
 import data from "./data.js";
 
 /* Pages, Components */
-import Detail from "./pages/detail.js";
-import About from "./pages/about.js";
-import Event from "./pages/event.js";
+import Detail from "./pages/Detail.js";
+import About from "./pages/About.js";
+import Event from "./pages/Event.js";
 import Product from "./components/products.js";
+import Cart from "./pages/Cart.js";
+
+export let Context1 = createContext(); // state 보관함
 
 function App() {
   let [shoes, setShoes] = useState(data);
+  let [stock] = useState([10, 11, 12]);
   let [moreBtn, setMoreBtn] = useState(2);
   let [loading, setLoading] = useState(false);
   let navigate = useNavigate();
@@ -55,7 +59,7 @@ function App() {
               <Container>
                 <Row>
                   {shoes.map(function (num, i) {
-                    return <Product shoes={shoes} num={i} />;
+                    return <Product shoes={shoes} num={i} key={i} />;
                   })}
                 </Row>
 
@@ -98,7 +102,14 @@ function App() {
             </>
           }
         />
-        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
+        <Route
+          path="/detail/:id"
+          element={
+            <Context1.Provider value={{ stock, shoes }}>
+              <Detail shoes={shoes} />
+            </Context1.Provider>
+          }
+        />
 
         <Route path="/about" element={<About />}>
           <Route path="member" element={<div>member</div>} />
@@ -110,6 +121,7 @@ function App() {
           <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
         </Route>
 
+        <Route path="/cart" element={<Cart />}></Route>
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </div>
