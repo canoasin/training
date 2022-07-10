@@ -2,17 +2,15 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Nav } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { Context1 } from "../App.js";
+import { addBasket } from "../store/basketSlice.js";
 
 let YellowBtn = styled.button`
   background: ${(props) => props.bg};
   color: ${(props) => (props.bg == "blue" ? "white" : "black")};
   padding: 10px;
 `;
-
-/* let NewBtn = styled.button(YellowBtn)`
-  font-size: 18px;
-`; */
 
 export default function Detail(props) {
   let { stock, shoes } = useContext(Context1);
@@ -23,6 +21,7 @@ export default function Detail(props) {
   let imgNum = parseInt(id) + 1;
   let [tab, setTab] = useState(0);
   let [fade2, setFade2] = useState("");
+  let dispatch = useDispatch();
 
   useEffect(() => {
     setFade2("end");
@@ -81,7 +80,20 @@ export default function Detail(props) {
           <h4 className="pt-5">{props.shoes[id].title}</h4>
           <p>{props.shoes[id].content}</p>
           <p>{props.shoes[id].price}</p>
-          <button className="btn btn-danger">주문하기</button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              dispatch(
+                addBasket({
+                  id: props.shoes[id].id,
+                  name: props.shoes[id].title,
+                  count: 2,
+                })
+              );
+            }}
+          >
+            주문하기
+          </button>
         </div>
       </div>
       <Nav variant="tabs" defaultActiveKey="link0">
